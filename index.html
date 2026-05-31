@@ -537,6 +537,39 @@
     opacity: 1;
     transform: translateY(0);
   }
+ #reel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #reel-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    aspect-ratio: 16/9;
+  }
+  #reel-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--foreground);
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  #reel-close:hover { opacity: 1; }
+  #reel-iframe {
+    width: 100%;
+    height: 100%;
+  }
 </style>
 </head>
 <body>
@@ -694,10 +727,10 @@
       </div>
       <ul class="links-list">
         <li>
-         <a href="#" class="link-item"> 
+        <a href="#" class="link-item" onclick="openReel();return false;">
             <span class="link-label font-display">Reel</span>
             <span class="link-dash"></span>
-            <span class="link-note">2026</span>
+            <span class="link-note">2025</span>
             <span class="link-arrow font-display accent-glow">&#x2192;</span>
           </a>
         </li>
@@ -794,6 +827,36 @@
   }, { threshold: 0.08 });
 
   document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
+ <div id="reel-overlay" style="display:none;" onclick="closeReel(event)">
+  <div id="reel-container">
+    <button id="reel-close" onclick="closeReel()">&#x2715;</button>
+    <iframe
+      id="reel-iframe"
+      src=""
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+ <script>
+  function openReel() {
+    document.getElementById('reel-iframe').src =
+      'https://www.youtube.com/embed/tcdgfJEDyTY?autoplay=1&rel=0';
+    document.getElementById('reel-overlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+  function closeReel(e) {
+    if (e && e.target !== document.getElementById('reel-overlay') &&
+        e.target !== document.getElementById('reel-close')) return;
+    document.getElementById('reel-iframe').src = '';
+    document.getElementById('reel-overlay').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeReel({ target: document.getElementById('reel-overlay') });
+  });
 </script>
 </body>
 </html>
